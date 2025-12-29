@@ -3,37 +3,44 @@
  * 
  * Purpose: Main landing page for the e-commerce website.
  * This page serves as the entry point for users visiting the site.
- * It displays a fixed sidebar navigation, header with banner, and a hero section
- * with a prominent search bar for product discovery.
+ * Supports both GenZ (modern) and Old School (traditional) layouts
+ * based on user preference.
  * 
  * Features:
+ * - Dynamic layout switching (GenZ/Old School)
  * - Fixed left sidebar with navigation icons
- * - Sticky header with promotional banner
- * - Hero section with centered search functionality
+ * - GenZ: Carousel with dynamic product cards
+ * - Old School: Traditional grid layout
  * - Responsive design for all screen sizes
- * - Clean layout with proper spacing
  */
 
-import Sidebar from "@/components/Sidebar";
+"use client";
+
+import { useLayout } from "@/contexts/LayoutContext";
+import { GenZLayout, OldSchoolLayout } from "@/components/Layouts";
 import HeroSection from "@/components/Hero";
+import OldSchoolHome from "@/components/Layouts/OldSchoolHome";
+import LayoutTransition from "@/components/Layouts/LayoutTransition";
 
 export default function Home() {
+  const { layoutType } = useLayout();
+  const isGenZ = layoutType === "genz";
+
   return (
-    <div className="min-h-screen bg-white font-sans">
-      {/* Fixed Sidebar */}
-      <Sidebar />
-
-      {/* Main Content Area - Offset for Sidebar */}
-      <div className="ml-16">
-
-        {/* Main Content */}
-        <main className="w-full">
-          {/* Hero Section with Search Bar and Carousel */}
+    <div className="relative">
+      {/* GenZ Layout with Transition */}
+      <LayoutTransition isVisible={isGenZ}>
+        <GenZLayout>
           <HeroSection />
+        </GenZLayout>
+      </LayoutTransition>
 
-          {/* Additional content sections will be added here */}
-        </main>
-      </div>
+      {/* Old School Layout with Transition */}
+      <LayoutTransition isVisible={!isGenZ}>
+        <OldSchoolLayout>
+          <OldSchoolHome />
+        </OldSchoolLayout>
+      </LayoutTransition>
     </div>
   );
 }
